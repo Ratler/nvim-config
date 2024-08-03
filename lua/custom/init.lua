@@ -1,6 +1,23 @@
 vim.opt.colorcolumn = "120"
 vim.wo.relativenumber = true
 
+-- CurSearch needs to be set here, hl_override is not working
+vim.api.nvim_set_hl(0, "Search", { fg = "black", bg = "green" })
+vim.api.nvim_set_hl(0, "IncSearch", { fg = "black", bg = "green" })
+vim.api.nvim_set_hl(0, "CurSearch", { fg = "#f8bd96", bg = "#474656" })
+
+-- Status column colors
+vim.api.nvim_set_hl(0, "LineNr4", { fg = "#3b4261" })
+vim.api.nvim_set_hl(0, "LineNr3", { fg = "#446464" })
+vim.api.nvim_set_hl(0, "LineNr2", { fg = "#5d8e97" })
+vim.api.nvim_set_hl(0, "LineNr1", { fg = "#7daeb9" })
+vim.api.nvim_set_hl(0, "LineNr0", { fg = "#bdeff9", bold = true })
+vim.opt.statuscolumn = '%s%=%#LineNr4#%{(v:relnum >= 4)?v:relnum." │ ":"" }'
+    .. '%#LineNr3#%{(v:relnum == 3)?v:relnum." │ ":"" }'
+    .. '%#LineNr2#%{(v:relnum == 2)?v:relnum." │ ":"" }'
+    .. '%#LineNr1#%{(v:relnum == 1)?v:relnum." │ ":"" }'
+    .. '%#LineNr0#%{(v:relnum == 0)?v:lnum." │ ":"" }'
+
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })

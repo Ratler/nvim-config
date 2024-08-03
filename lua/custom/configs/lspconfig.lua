@@ -21,7 +21,7 @@ local servers = {
 
 local function organize_imports()
   local params = {
-    command = "_typescript.oranizeimports",
+    command = "_typescript.organizeImports",
     arguments = { vim.api.nvim_buf_get_name(0) },
   }
   vim.lsp.buf.execute_command(params)
@@ -58,7 +58,7 @@ for _, lsp in ipairs(servers) do
       },
     }
     server_config.commands = {
-      organizeimports = {
+      OrganizeImports = {
         organize_imports,
         description = "organize imports",
       },

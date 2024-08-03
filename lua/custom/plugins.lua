@@ -1,4 +1,4 @@
--- local overrides = require 'custom.configs.overrides'
+local overrides = require "custom.configs.overrides"
 local plugins = {
 
   {
@@ -17,6 +17,11 @@ local plugins = {
   {
     "wakatime/vim-wakatime",
     lazy = false,
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    opts = overrides.cmp,
   },
 
   {
@@ -308,17 +313,28 @@ local plugins = {
   -- }
 
   {
-    "github/copilot.vim",
+    "supermaven-inc/supermaven-nvim",
     lazy = false,
-    config = function() -- Mapping tab is already used by NvChad
-      -- vim.g.copilot_no_tab_map = true
-      vim.g.copilot_assume_mapped = true
-      -- vim.g.copilot_tab_fallback = ""
-      -- The mapping is set to other key, see custom/lua/mappings
-      -- or run <leader>ch to see copilot mapping section
+    event = "InsertEnter",
+    config = function()
+      require("supermaven-nvim").setup {
+        disable_inline_completion = true,
+        disable_keymaps = true,
+      }
     end,
   },
-
+  -- {
+  --   "github/copilot.vim",
+  --   lazy = false,
+  --   config = function() -- Mapping tab is already used by NvChad
+  --     -- vim.g.copilot_no_tab_map = true
+  --     vim.g.copilot_assume_mapped = true
+  --     -- vim.g.copilot_tab_fallback = ""
+  --     -- The mapping is set to other key, see custom/lua/mappings
+  --     -- or run <leader>ch to see copilot mapping section
+  --   end,
+  -- },
+  --
   -- {
   --   "NeogitOrg/neogit",
   --   lazy = false,
@@ -331,6 +347,15 @@ local plugins = {
   --   },
   --   config = true,
   -- },
+
+  {
+    "altermo/ultimate-autopair.nvim",
+    event = { "InsertEnter", "CmdlineEnter" },
+    branch = "v0.6", --recommended as each new version will have breaking changes
+    opts = {
+      --Config goes here
+    },
+  },
   --
   {
     "iamcco/markdown-preview.nvim",
