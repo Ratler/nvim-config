@@ -17,6 +17,13 @@ vim.opt.statuscolumn = '%s%=%#LineNr4#%{(v:relnum >= 4)?v:relnum." │ ":"" }'
     .. '%#LineNr2#%{(v:relnum == 2)?v:relnum." │ ":"" }'
     .. '%#LineNr1#%{(v:relnum == 1)?v:relnum." │ ":"" }'
     .. '%#LineNr0#%{(v:relnum == 0)?v:lnum." │ ":"" }'
+vim.api.nvim_create_autocmd("BufEnter", { -- Disable status column in nvimtree (directory listing)
+  callback = function()
+    if vim.bo.filetype == "NvimTree" then
+      vim.wo.statuscolumn = ""
+    end
+  end,
+})
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
