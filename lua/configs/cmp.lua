@@ -1,12 +1,11 @@
 local cmp = require "cmp"
 local config = cmp.get_config()
-local M = {}
 
 table.insert(config.sources, {
   name = "supermaven",
 })
 
-M.cmp = {
+local options = {
   completion = {
     completeopt = "menu,menuone,noselect,noinsert",
   },
@@ -26,10 +25,4 @@ M.cmp = {
   },
 }
 
-M.nvimtre = {
-  view = {
-    adaptive_size = true,
-  },
-}
-
-return M
+cmp.setup(options)
