@@ -26,4 +26,10 @@ M.cmp = {
   },
 }
 
+M.nvimtre = {
+  view = {
+    adaptive_size = true,
+  },
+}
+
 return M

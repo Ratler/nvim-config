@@ -1,4 +1,6 @@
-local overrides = require "custom.configs.overrides"
+local overrides = require "configs.overrides"
+
+--@type NvPluginSpec[]
 local plugins = {
 
   {
@@ -24,118 +26,14 @@ local plugins = {
     opts = overrides.cmp,
   },
 
-  {
-    "neovim/nvim-lspconfig",
-    config = function(_)
-      require "plugins.configs.lspconfig"
-      require "custom.configs.lspconfig"
-    end,
-  },
-
-  {
-    "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        -- lua
-        "lua-language-server",
-        "stylua",
-
-        -- webdev
-        "phpactor",
-        "eslint_d",
-        "prettierd",
-        "js-debug-adapter",
-        "typescript-language-server",
-        "vue-language-server",
-        "tailwindcss-language-server",
-        "html-lsp",
-
-        -- c/c++
-        "clangd",
-        "clang-format",
-        "cmake-language-server",
-        "cpplint",
-        "cpptools",
-
-        -- golang
-        "gopls",
-        "gofumpt",
-        "goimports",
-        "goimports-reviser",
-        "golangci-lint",
-        "golangci-lint-langserver",
-        "golines",
-        "gomodifytags",
-
-        -- shell
-        "bash-language-server",
-        "shellcheck",
-
-        -- python
-        "black",
-        "debugpy",
-        "mypy",
-        "pyright",
-
-        -- mk
-        "marksman",
-
-        -- Other
-        "ruff",
-        "terraform-ls",
-        "tflint",
-        "yaml-language-server",
-        "dockerfile-language-server",
-        "taplo",
-      },
-    },
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        -- defaults
-        "vim",
-        "lua",
-        "vimdoc",
-
-        -- web dev
-        "html",
-        "css",
-        "javascript",
-        "typescript",
-        "tsx",
-        "vue",
-
-        -- low level
-        "c",
-
-        -- Programming languages
-        "tcl",
-        "php",
-        "go",
-        "gomod",
-        "python",
-        "kotlin",
-        "java",
-        "groovy",
-
-        -- Infra
-        "hcl",
-        "terraform",
-        "yaml",
-        "json",
-        "bash",
-        "dockerfile",
-        "jq",
-
-        -- markdown
-        "markdown",
-        "markdown_inline",
-      },
-    },
-  },
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   config = function(_)
+  --     require "nvchad.configs.lspconfig"
+  --     require "configs.lspconfig"
+  --   end,
+  -- },
+  --
 
   {
     "nvimtools/none-ls.nvim",
@@ -145,7 +43,7 @@ local plugins = {
       "gbprod/none-ls-shellcheck.nvim",
     },
     opts = function()
-      return require "custom.configs.null-ls"
+      return require "configs.null-ls"
     end,
   },
 
@@ -154,72 +52,13 @@ local plugins = {
   },
 
   {
-    "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      "nvim-neotest/nvim-nio",
-    },
-    config = function()
-      local dap = require "dap"
-      local dapui = require "dapui"
-      dapui.setup()
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
-      end
-    end,
-  },
-
-  {
-    "mfussenegger/nvim-dap",
-    config = function()
-      require "custom.configs.dap"
-      require("core.utils").load_mappings "dap"
-    end,
-  },
-
-  {
-    "leoluz/nvim-dap-go",
-    ft = "go",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
-    },
-    config = function(_, opts)
-      require("dap-go").setup(opts)
-      require("core.utils").load_mappings "dap_go"
-    end,
-  },
-
-  {
     "olexsmir/gopher.nvim",
     ft = "go",
     config = function(_, opts)
       require("gopher").setup(opts)
-      require("core.utils").load_mappings "gopher"
     end,
     build = function()
       vim.cmd [[silent! GoInstallDeps]]
-    end,
-  },
-
-  {
-    "mfussenegger/nvim-dap-python",
-    ft = "python",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
-    },
-    config = function(_, opts)
-      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
-      require("dap-python").setup(path)
-      require("core.utils").load_mappings "dap_python"
     end,
   },
 
@@ -308,7 +147,7 @@ local plugins = {
   --   url = "https://git.sr.ht/~reggie/licenses.nvim",
   --   lazy = false,
   --   config = function()
-  --     require 'custom.configs.license'
+  --     require 'configs.license'
   --   end
   -- }
 
@@ -364,6 +203,57 @@ local plugins = {
     build = function()
       vim.fn["mkdp#util#install"]()
     end,
+  },
+
+  {
+    "OXY2DEV/markview.nvim",
+    -- The plugin automatically runs itself when a
+    -- markdown file is opened. You need to use this to
+    -- tell lazy to load the plugin when the filetype is
+    -- markdown
+    ft = "markdown",
+    dependencies = {
+      -- You may not need this if you don't lazy load
+      -- Or if the parsers are in your $RUNTIMEPATH
+      "nvim-treesitter/nvim-treesitter",
+
+      "nvim-tree/nvim-web-devicons",
+    },
+  },
+
+  {
+    "polarmutex/git-worktree.nvim",
+    version = "^2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+
+  {
+    "rcarriga/nvim-notify",
+    config = function()
+      require("notify").setup {
+        background_colour = "#000000",
+        enabled = false,
+      }
+    end,
+  },
+
+  {
+    "VonHeikemen/fine-cmdline.nvim",
+    lazy = false,
+    dependencies = { "MunifTanjim/nui.nvim" },
+  },
+
+  {
+    "ggandor/leap.nvim",
+    lazy = false,
+    config = function()
+      require("leap").add_default_mappings()
+    end,
+  },
+
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = overrides.nvimtree,
   },
 }
 

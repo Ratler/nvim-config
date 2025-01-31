@@ -1,6 +1,9 @@
-local on_attach = require("plugins.configs.lspconfig").on_attach
-local on_init = require("plugins.configs.lspconfig").on_init
-local capabilities = require("plugins.configs.lspconfig").capabilities
+-- load defaults i.e lua_lsp
+require("nvchad.configs.lspconfig").defaults()
+
+local on_attach = require("nvchad.configs.lspconfig").on_attach
+local on_init = require("nvchad.configs.lspconfig").on_init
+local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
 local util = require "lspconfig/util"
@@ -13,10 +16,11 @@ local servers = {
   "dockerls",
   "html",
   "taplo",
-  "tsserver",
+  "ts_ls",
   "volar",
   "tailwindcss",
   "marksman",
+  "ansiblels",
 }
 
 local function organize_imports()
@@ -51,7 +55,7 @@ for _, lsp in ipairs(servers) do
     }
   end
 
-  if lsp == "tsserver" then
+  if lsp == "ts_ls" then
     server_config.init_options = {
       preferences = {
         disablesuggestions = true,
@@ -153,4 +157,34 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.buf.format { async = true }
     end, opts)
   end,
+})
+
+-- Force ansiblels on buffers based on path patterns (to avoid ansible.yaml file endings or annotations)
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufNewFile" }, {
+  group = vim.api.nvim_create_augroup("ansible_playbook", {}),
+  pattern = {
+    "*/*playbook*/*.yml",
+    "*/*playbook*/*.yaml",
+    "*/*ansible*/*.yml",
+    "*/*ansible*/*.yaml",
+    "*/roles/*/tasks/*.yml",
+    "*/roles/*/tasks/*.yaml",
+    "*/roles/*/defaults/*.yml",
+    "*/roles/*/defaults/*.yaml",
+    "*/roles/*/handlers/*.yml",
+    "*/roles/*/handlers/*.yaml",
+    "*/roles/*/tasks/*.yml",
+    "*/roles/*/tasks/*.yaml",
+    "*/*ansible*/*.yaml",
+    "*/*ansible*/*.yaml",
+    "*/*ansible*/*.yaml",
+    "playbook.yml",
+    "playbook.yaml",
+    "site.yml",
+    "site.yaml",
+    "inventory.yml",
+    "inventory.yaml",
+  },
+  command = "set ft=yaml.ansible",
+  desc = "use yaml.ansible for ansible playbooks",
 })

@@ -1,8 +1,8 @@
 ---@type ChadrcConfig
 local M = {}
 
-M.ui = {
-  theme = "catppuccin",
+M.base46 = {
+  theme = "nightowl",
   hl_override = {
     IncSearch = {
       fg = "black",
@@ -14,7 +14,5 @@ M.ui = {
     },
   },
 }
-M.plugins = "custom.plugins"
-M.mappings = require "custom.mappings"
 
 return M
