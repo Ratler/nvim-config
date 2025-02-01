@@ -21,6 +21,13 @@ map("n", "<C-u>", "<C-u>zz", { desc = "half page up (center)" })
 map("n", "n", "nzzzv")
 map("n", "N", "Nzzzv")
 map("n", "<leader>ft", "<cmd>TodoTelescope<CR>", { desc = "Find Todo" })
+
+-- line move
+map("n", "<A-j>", [[<cmd> m .+1<cr>==]], { desc = "Move line down" })
+map("n", "<A-k>", [[<cmd> m .-2<cr>==]], { desc = "Move line up" })
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move line down", silent = true })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move line up", silent = true })
+
 -- Telescope
 map(
   "n",
