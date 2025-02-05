@@ -25,4 +25,10 @@ local options = {
   },
 }
 
+M.nvimtree = {
+  view = {
+    adaptive_size = true,
+  },
+}
+
 cmp.setup(options)
