@@ -1,16 +1,44 @@
 return {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
-    opts = require "configs.conform",
+    event = "BufWritePre",
+    config = function()
+      require "configs.conform"
+    end,
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
+  {
+    "zapling/mason-conform.nvim",
+    event = "VeryLazy",
+    dependencies = { "conform.nvim" },
+    config = function()
+      require "configs.mason-conform"
+    end,
+  },
+
   {
     "neovim/nvim-lspconfig",
+    lazy = false,
     config = function()
       require("nvchad.configs.lspconfig").defaults()
       require "configs.lspconfig"
+    end,
+  },
+
+  {
+    "williamboman/mason-lspconfig.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-lspconfig" },
+    config = function()
+      require "configs.mason-lspconfig"
+    end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require "configs.treesitter"
     end,
   },
 
@@ -34,20 +62,58 @@ return {
 
   {
     "hrsh7th/nvim-cmp",
-    config = function()
-      require "configs.cmp"
-    end,
-  },
-
-  {
-    "nvimtools/none-ls.nvim",
-    event = "VeryLazy",
     dependencies = {
-      "nvimtools/none-ls-extras.nvim",
-      "gbprod/none-ls-shellcheck.nvim",
+      "supermaven-inc/supermaven-nvim",
     },
-    opts = function()
-      return require "configs.null-ls"
+    opts = function(_, opts)
+      local cmp = require "cmp"
+      local luasnip = require "luasnip"
+
+      opts.preselect = cmp.PreselectMode.None
+
+      opts.completion = {
+        completeopt = "menu,menuone,noselect,noinsert",
+      }
+      opts.sources = {
+        { name = "supermaven" },
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "buffer" },
+        { name = "nvim_lua" },
+        { name = "path" },
+      }
+      opts.mapping = {
+        ["<CR>"] = cmp.mapping.confirm {
+          behavior = cmp.ConfirmBehavior.Insert,
+          select = false,
+        },
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif luasnip.expandable() then
+            luasnip.expand()
+          elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          else
+            fallback()
+          end
+        end, {
+          "i",
+          "s",
+        }),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, {
+          "i",
+          "s",
+        }),
+      }
     end,
   },
 
@@ -101,7 +167,7 @@ return {
   {
     "kristijanhusak/vim-dadbod-ui",
     dependencies = {
-      { "tpope/vim-dadbod",                     lazy = true },
+      { "tpope/vim-dadbod", lazy = true },
       { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
     },
     cmd = {
@@ -147,14 +213,6 @@ return {
     end,
   },
 
-  -- {
-  --   url = "https://git.sr.ht/~reggie/licenses.nvim",
-  --   lazy = false,
-  --   config = function()
-  --     require 'configs.license'
-  --   end
-  -- }
-
   {
     "supermaven-inc/supermaven-nvim",
     lazy = false,
@@ -166,30 +224,6 @@ return {
       }
     end,
   },
-  -- {
-  --   "github/copilot.vim",
-  --   lazy = false,
-  --   config = function() -- Mapping tab is already used by NvChad
-  --     -- vim.g.copilot_no_tab_map = true
-  --     vim.g.copilot_assume_mapped = true
-  --     -- vim.g.copilot_tab_fallback = ""
-  --     -- The mapping is set to other key, see custom/lua/mappings
-  --     -- or run <leader>ch to see copilot mapping section
-  --   end,
-  -- },
-  --
-  -- {
-  --   "NeogitOrg/neogit",
-  --   lazy = false,
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",         -- required
-  --     "sindrets/diffview.nvim",        -- optional - Diff integration
-  --     -- Only one of these is needed, not both.
-  --     "nvim-telescope/telescope.nvim", -- optional
-  --     "ibhagwan/fzf-lua",              -- optional
-  --   },
-  --   config = true,
-  -- },
 
   {
     "altermo/ultimate-autopair.nvim",
@@ -199,7 +233,7 @@ return {
       --Config goes here
     },
   },
-  --
+
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },

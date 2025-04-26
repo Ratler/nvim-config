@@ -8,7 +8,8 @@ local capabilities = require("nvchad.configs.lspconfig").capabilities
 local lspconfig = require "lspconfig"
 local util = require "lspconfig/util"
 
-local servers = {
+lspconfig.servers = {
+  "gopls",
   "phpactor",
   "terraformls",
   "bashls",
@@ -23,6 +24,8 @@ local servers = {
   "ansiblels",
 }
 
+local default_servers = {}
+
 local function organize_imports()
   local params = {
     command = "_typescript.organizeImports",
@@ -33,7 +36,7 @@ end
 
 local mason_registry = require "mason-registry"
 
-for _, lsp in ipairs(servers) do
+for _, lsp in ipairs(default_servers) do
   local server_config = {}
   if require("neoconf").get(lsp .. ".disable") then
     return
@@ -73,14 +76,17 @@ for _, lsp in ipairs(servers) do
 end
 
 lspconfig.gopls.setup {
-  on_attach = on_attach,
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+    on_attach(client, bufnr)
+  end,
   capabilities = capabilities,
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
   root_dir = util.root_pattern("go.work", "go.mod", ".git"),
   settings = {
     gopls = {
-      gofumpt = true,
       completeUnimported = true,
       usePlaceholders = true,
       analyses = {
