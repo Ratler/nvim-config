@@ -11,7 +11,7 @@ dap.adapters["pwa-node"] = {
 
 dap.adapters.lldb = {
   type = "executable",
-  command = "/opt/homebrew/opt/llvm/bin/lldb-vscode", -- adjust as needed, must be absolute path
+  command = "/opt/homebrew/opt/llvm/bin/lldb-dap", -- adjust as needed, must be absolute path
   name = "lldb",
 }
 
